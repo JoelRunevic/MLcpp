@@ -97,5 +97,15 @@ $$ \frac{\partial L(p, y)}{\partial z_{j}^{(1)}} = \frac{\partial L(p, y)}{\part
 
 holds.
 
+### Inner Parameters.
 
+We now just require to compute the gradients for the final parameters; namely, $\frac{\partial L(p, y)}{\partial W^{(1)}_{i, j}}$ as well as $\frac{\partial L(p, y)}{\partial b^{(1)}_i}$ respectively.
+By symmetry from above, we have that 
 
+$$ \frac{\partial z_{i}^{(1)}}{\partial W_{i, j}^{(1)}} = x_{j} $$
+
+and 
+
+$$ \frac{\partial z_{i}^{(1)}}{\partial b_{j}^{(1)}} = \delta_{i, j} $$ 
+
+holds. With this, everything that we need for backpropagation is done!
