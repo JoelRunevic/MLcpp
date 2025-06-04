@@ -1,6 +1,7 @@
 # Writing a 2-layer MLP to solve MNIST for fun.
 
 Everything is in mlp.cpp for now. This is just a personal project, so I'm not really expecting anyone to be looking here, but feel free too! :)
+Note: this is done largely for fun, and so please do expect errors.
 
 TODO:
 - Add batching.
@@ -70,7 +71,31 @@ holds. Through the backpropagation algorithm, this is enough to update the gradi
 
 $$ \frac{\partial L(p, y)}{\partial b_{j}^{(2)}} = \frac{\partial L(p, y)}{\partial z_{j}^{(2)}} $$ 
 
-holds respectively.
+holds respectively. 
+
+### Intermediate Post-Activation.
+
+We note that each $a_{j}^{(1)}$ is a function of $W_{i, j}^{(1)}$ and $b_{i}^{(1)}$. Hence, we now seek to find $\frac{\partial L(p, y)}{\partial a_{j}^{(1)}}$. By the chain rule, we have that
+
+$$ \frac{\partial L(p, y)}{\partial a_{j}^{(1)}} = \sum_{k=1}^{o} \frac{\partial L(p, y)}{\partial z_{k}^{(2)}} \frac{\partial z_{k}^{(2)}}{\partial a_{j}^{(1)}} $$ 
+
+holds. By above, we have that 
+
+$$ \frac{\partial z_{k}^{(2)}}{\partial a_{j}^{(2)}} = W_{k, j}^{(2)} $$ 
+
+holds. So, we have that 
+
+$$ \frac{\partial L(p, y)}{\partial a_{j}^{(1)}} = \sum_{k=1}^{o} \frac{\partial L(p, y)}{\partial z_{k}^{(2)}} W_{k, j}^{(2)} $$ 
+
+holds.
+
+### Intermediate Pre-Activation.
+
+From here, we can just recall that $a_{j}^{(1)} = \text{ReLU}(z_{j}^{(1)})$ holds. Therefore, 
+
+$$ \frac{\partial L(p, y)}{\partial z_{j}^{(1)}} = \frac{\partial L(p, y)}{\partial a_{j}^{(1)}} \cdot 1_{z_{j}^{(1)} > 0} $$
+
+holds.
 
 
 
