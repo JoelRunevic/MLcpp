@@ -27,7 +27,7 @@ $$ \frac{\partial L(p, y)}{\partial z_{k}^{(2)}} = -\sum_{i=1}^{o} y_{i} \frac{\
 holds. So, it's obviously useful to compute $\frac{\partial \log(p_{i})}{\partial z_{k}^{(2)}}$. By above, we can see that 
 
 $$ \frac{\partial \log(p_{i})}{\partial z_{k}^{(2)}} = \delta_{i, k} - \frac{\frac{\partial \left(\sum_{j=1}^{o} \exp(z_{j}^{(2)})\right)}{\partial z_{k}^{(2)}}}{\sum_{j=1}^{o} \exp(z_{j}^{(2)})} $$
-
+ 
 From here, we can see that 
 
 $$ \frac{\partial \left(\sum_{j=1}^{o} \exp(z_{j}^{(2)})\right)}{\partial z_{k}^{(2)}} = \exp(z_{k}^{(2)}) $$ 
@@ -41,3 +41,36 @@ Thus, it follows that
 $$ \frac{\partial L(p, y)}{\partial z_{k}^{(2)}} = -\sum_{i=1}^{o} y_{i} \left(\delta_{i, k} - p_{k}\right) = -(y_{k} - p_{k}) = p_{k} - y_{k} $$ 
 
 respectively. So, the gradient vector for this output layer is simply $p - y$ in vector form.
+
+### Outer Parameters.
+
+We now seek to find $\frac{\partial L(p, y)}{\partial W^{(2)}_{i, j}}$ as well as $\frac{\partial L(p, y)}{\partial b^{(2)}_i}$.
+
+We have that 
+
+$$ z_{i}^{(2)} = \sum_{j=1}^{d} W_{i, j}^{(2)} a_{j}^{(1)} + b^{(2)}_i $$
+
+holds. So, by the chain rule, we have that 
+
+$$ \frac{\partial L(p, y)}{\partial W_{i, j}^{(2)}} = \sum_{k=1}^{o} \frac{\partial L(p, y)}{\partial z_{k}^{(2)}} \frac{\partial z_{k}^{(2)}}{\partial W_{i, j}^{(2)}} = \frac{\partial L(p, y)}{\partial z_{i}^{(2)}} \frac{\partial z_{i}^{(2)}}{\partial W_{i, j}^{(2)}} $$ 
+
+and
+
+$$ \frac{\partial L(p, y)}{\partial b_{j}^{(2)}} = \sum_{k=1}^{o} \frac{\partial L(p, y)}{\partial z_{k}^{(2)}} \frac{\partial z_{k}^{(2)}}{\partial b_{j}^{(2)}} = \frac{\partial L(p, y)}{\partial z_{j}^{(2)}} \frac{\partial z_{j}^{(2)}}{\partial b_{j}^{(2)}} $$
+
+holds. By above, we can see that 
+
+$$ \frac{\partial z_{i}^{(2)}}{\partial W_{i, j}^{(2)}} = a_{j}^{(1)} $$ 
+
+and 
+
+$$ \frac{\partial z_{i}^{(2)}}{\partial b_{j}^{(2)}} = \delta_{i, j} $$ 
+
+holds. Through the backpropagation algorithm, this is enough to update the gradients of this layer, with the obvious simplification here being that  
+
+$$ \frac{\partial L(p, y)}{\partial b_{j}^{(2)}} = \frac{\partial L(p, y)}{\partial z_{j}^{(2)}} $$ 
+
+holds respectively.
+
+
+
