@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cassert>
 #include <iostream>
+#include <fstream>
 
 // Aliases for convenience.
 using Vec = std::vector<double>;
@@ -175,34 +176,39 @@ struct MLP {
     }
 };
 
+// MNIST File Reading.
+static uint32_t read_be_uint32(std::ifstream &f){
+    unsigned char bytes[4]; 
+
+    // Here we're simply reading in the next 4 bytes, but we first have to do a type cast.
+    f.read(reinterpret_cast<char*>(bytes), 4);
+    return (uint32_t(bytes[0]) << 24)
+         | (uint32_t(bytes[1]) << 16)
+         | (uint32_t(bytes[2]) << 8)
+         |  uint32_t(bytes[3]);
+}
+
 
 int main() {
-    // Doing a toy example for correctness.
-    MLP net(2, 3, 1);
-    Cache cache; // stores forward pass for backprop.
-    Gradients grads; // stores the gradients.
+    // 1) Here we're loading MNIST headers and the associated data.
+    std::ifstream ifs_img("data/train-images.idx3-ubyte", std::ios::binary);
+    std::ifstream ifs_lbl("data/train-labels.idx1-ubyte", std::ios::binary);
+    assert(ifs_img.is_open() && "Cannot open train-images-idx3-ubyte");
+    assert(ifs_lbl.is_open() && "Cannot open train-labels-idx1-ubyte");
 
-    for (double &w : net.W1){
-        w = 1.0;
-    }
-    std::fill(net.b1.begin(), net.b1.end(), 2.0);
+    // Reading image-file headers.
+    uint32_t magic_img = read_be_uint32(ifs_img); 
+    uint32_t num_images = read_be_uint32(ifs_img);
+    uint32_t num_rows = read_be_uint32(ifs_img);
+    uint32_t num_cols = read_be_uint32(ifs_img);
 
-    for (double &w : net.W2){
-        w = 1.0; 
-    }
-    std::fill(net.b2.begin(), net.b2.end(), 2.0);
+    // Read label-file headers.
+    uint32_t magic_lbl = read_be_uint32(ifs_lbl);
+    uint32_t num_labels = read_be_uint32(ifs_lbl);
 
-    Vec x = {2.0, 5.0};
-    Vec z2 = net.forward(x, cache);
-
-    std::cout << "z_{1} = ";
-    for (double v : cache.z1) std::cout << v << " ";
-
-    std::cout << "\na_{1} = "; 
-    for (double v : cache.a1) std::cout << v << " ";
-
-    std::cout << "\nz_{2} = ";
-    for (double v : cache.z2) std::cout << v << " ";
+    assert(magic_img == 2051 && "Invalid image-file magic number.");
+    assert(magic_lbl == 2049 && "Invalid label-file magic number.");
+    assert(num_images == num_labels && "#images != #labels.");
 
     return 0;
 }
