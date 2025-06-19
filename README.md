@@ -3,6 +3,8 @@
 Everything is in mlp.cpp for now. This is just a personal project, so I'm not really expecting anyone to be looking here, but feel free too! :)
 Note: this is done largely for fun, and so please do expect errors.
 
+Right now it's at approx 90% test accuracy after 3 epochs.
+
 TODO:
 - Add batching.
 - Add more modularity; i.e. extend to more layers (?)
